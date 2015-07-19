@@ -1,6 +1,6 @@
 package kasyan.catalog.dto;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,25 +14,25 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_user", nullable=false)
-	public int id;
-	
-	@Column(name="email", nullable=false)
-	public String email;
-	
-	@Column(name="password", nullable=false)
-	public String password;
-	
-	@OneToMany(targetEntity=UserRole.class, fetch=FetchType.LAZY, mappedBy="user")
-	private Set<UserRole> userRole;
-	
-	@Column(name="enabled", nullable=false, columnDefinition="TINYINT(1)")
-	@Type(type="org.hibernate.type.NumericBooleanType")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_user", nullable = false, updatable = false, unique = true)
+	private int id;
+
+	@Column(name = "email", nullable = false, unique = true)
+	private String email;
+
+	@Column(name = "password", nullable = false)
+	private String password;
+
+	@OneToMany(targetEntity = UserRole.class, fetch = FetchType.LAZY, mappedBy = "user")
+	private List<UserRole> userRole;
+
+	@Column(name = "enabled", nullable = false, columnDefinition = "TINYINT(1)")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean enabled;
 
 	public int getId() {
@@ -59,11 +59,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Set<UserRole> getUserRole() {
+	public List<UserRole> getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(Set<UserRole> userRole) {
+	public void setUserRole(List<UserRole> userRole) {
 		this.userRole = userRole;
 	}
 
@@ -73,5 +73,11 @@ public class User {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public String toString() {
+		return "User: id - " + id + ", email - " + email + ", password - "
+				+ password + ", enabled - " + enabled;
 	}
 }

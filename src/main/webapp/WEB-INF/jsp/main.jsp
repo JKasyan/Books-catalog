@@ -19,7 +19,7 @@
 			<a href="javascript:logOut()">Log out</a>
 		</div>
 		<div id="links">
-			<a href="${contextPath}/all_books.html">Books list</a><br> <a
+			<a href="${contextPath}/books.html">Books list</a><br> <a
 				href="${contextPath}/authors.html">Authors list</a>
 		</div>
 	</div>

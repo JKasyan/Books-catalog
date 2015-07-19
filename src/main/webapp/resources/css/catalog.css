@@ -1,7 +1,7 @@
 body {
-	margin:	 				0px;
-	font-family:			Arial, sans-serif;
-	font-size: 				small;
+	margin:	 			0px;
+	font-family:		Arial, sans-serif;
+	font-size: 			small;
 }
 
 #header{
@@ -34,7 +34,7 @@ body {
 	width: 				100%;
 }
 
-#head_of_table button{
+#head_of_table input{
 	float: 				right;
 	margin-right: 		20px;
 }
@@ -65,4 +65,8 @@ body {
 
 #authors_table th,td{
 	border: 			1px solid black;
+}
+
+#user_registration_form table tr td{
+	border: 			none;
 }

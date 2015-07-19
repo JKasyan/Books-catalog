@@ -11,7 +11,7 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:url var="cssURL" value="/resources/css/catalog.css" />
 <link href="${cssURL}" rel="stylesheet" type="text/css">
-<title>Authors</title>
+<title>Books</title>
 </head>
 <body>
 	<div id="header">
@@ -25,34 +25,56 @@
 			<table>
 				<tr>
 					<td><a href="${contextPath}/main.html">Main page</a></td>
-					<td><h2>Authors list</h2></td>
+					<td><h2>Books list</h2></td>
 				</tr>
 			</table>
 		</div>
+		<div>
+			<form action="${contextPath}/books_search.html" method="post">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				<table id="searching_book">
+					<tr>
+						<td><h2>Enter the title of book</h2></td>
+						<td><input type="text" id="title" name="title"></td>
+						<td><input type="submit" value="Search book"></td>
+					</tr>
+				</table>
+			</form>
+		</div>
 		<div id="head_of_table">
 			<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<form action="${contextPath}/create_author.html" method="get">
-					<input id="create_book" value="Create new author" type="submit">
+				<form action="${contextPath}/create_book.html" method="get">
+					<input id="create_book" value="Create new book" type="submit">
 				</form>
 			</sec:authorize>
-			<h1>Authors list</h1>
+			<h1>Books list</h1>
 		</div>
-		<div id="authors_table">
+		<div id="books_table">
 			<table>
 				<tr>
-					<td>Name</td>
-					<td>Second name</td>
-					<td>Actions</td>
+					<td>Title</td>
+					<td>Short description</td>
+					<td>Publishing year</td>
+					<td>Authors</td>
+					<sec:authorize access="hasRole('ROLE_ADMIN')">
+						<td>Actions</td>
+					</sec:authorize>
 				</tr>
-				<c:forEach items="${authors}" var="author">
+				<c:forEach items="${books}" var="book">
 					<tr>
-						<td>${author.name}</td>
-						<td>${author.secondName}</td>
-						<td><sec:authorize access="hasRole('ROLE_ADMIN')">
-								<a href="${contextPath}/modify_author/${author.id}.html">Modify</a>
-								<a href="${contextPath}/delete_author/${author.id}.html">Delete</a>
-							</sec:authorize> <a href="${contextPath}/books_of_author/${author.id}.html">Books
-								list</a></td>
+						<td>${book.title}</td>
+						<td>${book.shortDescription}</td>
+						<td>${book.datePublish}</td>
+						<td><c:forEach items="${book.authors}" var="author">
+								<p>${author.name}${author.secondName}</p>
+								<br>
+							</c:forEach></td>
+						<sec:authorize access="hasRole('ROLE_ADMIN')">
+							<td><a href="${contextPath}/modify_book/${book.id}.html">Modify</a>
+								<a href="${contextPath}/delete_book/${book.id}.html">Delete</a>
+							</td>
+						</sec:authorize>
 					</tr>
 				</c:forEach>
 			</table>

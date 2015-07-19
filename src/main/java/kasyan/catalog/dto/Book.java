@@ -1,7 +1,7 @@
 package kasyan.catalog.dto;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,60 +13,58 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
 import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.Store;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
+
 
 @Entity
-@Table(name="books")
+@Table(name = "books")
 @Indexed
+@AnalyzerDef(name = "customanalyzer", 
+tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+filters={
+	@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, params={
+		@Parameter(name = "language", value = "English"),
+	}),
+	@TokenFilterDef(factory = StopFilterFactory.class, params={
+		@Parameter(name = "words", value = "stoplist.properties")
+	})
+})
 public class Book {
-	
-	public Book(){}
-	
-	public Book(String title, String shortDescription, String datePublish) {
-		this.title = title;
-		this.shortDescription = shortDescription;
-		this.datePublish = datePublish;
-	}
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_book", unique=true, nullable=false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_book", unique = true, nullable = false)
 	private int id;
-	
-	@Column(name="title", unique=true, nullable=false)
-	@Field(index=Index.YES, analyze = Analyze.YES, store = Store.NO)
-	@NotEmpty
+
+	@Column(name = "title", unique = true, nullable = false, length = 45)
+	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
 	private String title;
-	
-	@Column(name="short_desc")
-	@Field(index=Index.YES, analyze = Analyze.YES, store = Store.NO)
-	@NotNull
-	@Max(value = 45)
-	@Min(value = 10)
+
+	@Column(name = "short_desc", length = 45)
 	private String shortDescription;
-	
-	@NotNull
-	@Max(value = 4)
-	@Column(name="date_publ")
+
+	@Column(name = "date_publ", length = 4)
 	private String datePublish;
-	
-	
-	@ManyToMany(fetch=FetchType.LAZY)
-	@JoinTable(name="books_authors", joinColumns={
-			@JoinColumn(name = "id_book", nullable = false, updatable = false)},
-	inverseJoinColumns={@JoinColumn(name = "id_author", nullable = false, updatable = false)})
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "books_authors", joinColumns = { @JoinColumn(name = "id_book", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "id_author", nullable = false, updatable = false) })
 	@IndexedEmbedded
-	private Set<Author> authors = new HashSet<Author>();
+	private List<Author> authors = new ArrayList<Author>();
 
 	public int getId() {
 		return id;
@@ -92,11 +90,11 @@ public class Book {
 		this.datePublish = datePublish;
 	}
 
-	public Set<Author> getAuthors() {
+	public List<Author> getAuthors() {
 		return authors;
 	}
 
-	public void setAuthors(Set<Author> authors) {
+	public void setAuthors(List<Author> authors) {
 		this.authors = authors;
 	}
 
@@ -107,21 +105,30 @@ public class Book {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(obj == null) return false;
-		if(this.getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
 		Book book = (Book) obj;
-		Set<Author> authors = book.getAuthors();
-		if(authors.size() != this.authors.size()) return false;
-		return book.getId() == this.id &&
-				this.title.equals(book.getTitle()) &&
-				this.shortDescription.equals(book.getShortDescription()) &&
-				this.datePublish.equals(book.getDatePublish()) &&
-				book.getAuthors().size() == this.authors.size() &&
-				this.authors.containsAll(book.getAuthors());
+		List<Author> authors = book.getAuthors();
+		if (authors.size() != this.authors.size())
+			return false;
+		return book.getId() == this.id && this.title.equals(book.getTitle())
+				&& this.shortDescription.equals(book.getShortDescription())
+				&& this.datePublish.equals(book.getDatePublish())
+				&& book.getAuthors().size() == this.authors.size()
+				&& this.authors.containsAll(book.getAuthors());
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Book with parameters: id - " + id + ", title - " + title
+				+ ",  publsih date - " + datePublish + ", short description - "
+				+ shortDescription + ", authors - " + authors;
+	}
 }

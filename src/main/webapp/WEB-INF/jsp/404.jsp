@@ -8,18 +8,20 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:url var="cssURL" value="/resources/css/catalog.css" />
 <link href="${cssURL}" rel="stylesheet" type="text/css">
-<title>Access is denied</title>
+<title>Authors</title>
 </head>
 <body>
 	<div id="header">
 		<h1>Books Catalog</h1>
 	</div>
-	<div id="log_out">
-		<a href="javascript:logOut()">Log out</a>
-	</div>
-	<div id="links">
-		<a href="${contextPath}/main.html">Main page</a>
-		<h1>Access is denied</h1>
+	<div id="main">
+		<div id="log_out">
+			<a href="javascript:logOut()">Log out</a>
+		</div>
+		<div id="links">
+			<a href="${contextPath}/main.html">Main page</a>
+			<h1>Not found</h1>
+		</div>
 	</div>
 	<c:url value="/j_spring_security_logout" var="logoutUrl" />
 	<form action="${logoutUrl}" method="post" id="logoutForm">

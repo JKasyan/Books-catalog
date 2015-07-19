@@ -1,7 +1,7 @@
 package kasyan.catalog.dto;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,26 +12,23 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.search.annotations.Field;
-
 @Entity
-@Table(name="authors")
+@Table(name = "authors")
 public class Author {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_author", unique=true, nullable=false)
-	public int id;
-	
-	@Column(name="name")
-	@Field
-	public String name;
-	
-	@Column(name="second_name")
-	public String secondName;
-	
-	@ManyToMany(fetch=FetchType.LAZY, mappedBy="authors")
-	public Set<Book> books = new HashSet<Book>();
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_author", unique = true, nullable = false)
+	private int id;
+
+	@Column(name = "name")
+	private String name;
+
+	@Column(name = "second_name")
+	private String secondName;
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+	private List<Book> books = new ArrayList<Book>();
 
 	public int getId() {
 		return id;
@@ -57,11 +54,17 @@ public class Author {
 		this.secondName = secondName;
 	}
 
-	public Set<Book> getBooks() {
+	public List<Book> getBooks() {
 		return books;
 	}
 
-	public void setBooks(Set<Book> books) {
+	public void setBooks(List<Book> books) {
 		this.books = books;
+	}
+
+	@Override
+	public String toString() {
+		return "Author: id - " + id + ", name - " + name + ", second name - "
+				+ secondName;
 	}
 }

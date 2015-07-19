@@ -11,7 +11,7 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:url var="cssURL" value="/resources/css/catalog.css" />
 <link href="${cssURL}" rel="stylesheet" type="text/css">
-<title>Insert title here</title>
+<title>Modify book</title>
 </head>
 <body>
 	<div id="header">
@@ -25,17 +25,18 @@
 			<table>
 				<tr>
 					<td><a href="${contextPath}/main.html">Main page</a></td>
-					<td><a href="${contextPath}/all_books.html">Books list</a></td>
+					<td><a href="${contextPath}/books.html">Books list</a></td>
 					<td><h2>Modification of the book</h2></td>
 				</tr>
 			</table>
 		</div>
 		<div>
-			<form action="${contextPath}/modify_book/change_book.html" method="post">
+			<form:form modelAttribute="book" id="modify_book_form"
+				action="${contextPath}/modify_book/update_book.html" method="post">
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" />
 				<div>
-				<input name="id_book" type="hidden" value="${book.id}">
+					<input name="id_book" type="hidden" value="${book.id}">
 					<table class="tables">
 						<tr>
 							<td><h2>Fill in the required fields and push enter</h2></td>
@@ -46,26 +47,31 @@
 				<table class="tables">
 					<tr>
 						<td><h3>Title</h3></td>
-						<td><input maxlength="45" name="title" value="${book.title}" /></td>
+						<td><form:input path="title" maxlength="45" /></td>
+						<td><form:errors cssClass="error" path="title" /></td>
 					</tr>
 					<tr>
 						<td><h3>Short description</h3></td>
-						<td><textarea maxlength="45" name="desc" rows="3" cols="">${book.shortDescription}</textarea></td>
+						<td><form:textarea path="shortDescription" maxlength="45" /></td>
+						<td><form:errors cssClass="error" path="shortDescription" /></td>
 					</tr>
 					<tr>
 						<td><h3>Publishing date</h3></td>
-						<td><input maxlength="4" name="date" value="${book.datePublish}" /></td>
+						<td><form:input path="datePublish" maxlength="4" /></td>
+						<td><form:errors cssClass="error" path="datePublish"/></td>
 					</tr>
 					<tr>
 						<td><h3>Authors</h3></td>
-						<td><select name="authors" multiple="multiple">
+						<td><form:select path="authors">
 								<c:forEach items="${authors}" var="author">
-									<option value="${author.id}">${author.name} ${author.secondName}</option>
+									<form:option value="${author.name} ${author.secondName}" />
 								</c:forEach>
-						</select></td>
+						</form:select></td>
+						<td><form:errors cssClass="error" path="authors"/></td>
 					</tr>
 				</table>
-			</form>
+				<form:hidden path="id"/>
+			</form:form>
 		</div>
 	</div>
 	<c:url value="/j_spring_security_logout" var="logoutUrl" />
@@ -75,5 +81,63 @@
 	</form>
 	<script type="text/javascript"
 		src="${contextPath}/resources/js/catalog.js"></script>
+	<script type="text/javascript"
+		src="${contextPath}/resources/js/jquery-1.11.3.js"></script>
+	<script
+		src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"
+		type="text/javascript">
+		
+	</script>
+	<script type="text/javascript">
+	(function($,W,D)
+			{
+			    var JQUERY4U = {};
+			 
+			    JQUERY4U.UTIL =
+			    {
+			        setupFormValidation: function()
+			        {
+			            //form validation rules
+			            $("#create_book_form").validate({
+			                rules: {
+			                	title: "required",
+			                	shortDescription: {
+			                		required: true,
+			                		minlength: 10,
+			                		maxlength: 45
+			                	},
+			                	datePublish: {
+			                		required: true,
+			                	    number: true
+			                	},
+			                	authors: "required"
+			                },
+			                messages: {
+			                	title: "Please enter title of book",
+			                	shortDescription: {
+			                		required: "Please enter description of book",
+			                		minlength: "You must write at least 10 characters",
+			                		maxlength: "You can not write more than 45 characters"
+			                	},
+			                	datePublish: {
+			                		requird: "Please enter date of book",
+			                		number: "The date must contain only numbers"
+			                	}, 
+			                	authors: "You must choose at least one author"
+			                },
+			                submitHandler: function(form) {
+			                    form.submit();
+			                }
+			            });
+			        }
+			    }
+			 
+			    //when the dom has loaded setup form validation rules
+			    $(D).ready(function($) {
+			        JQUERY4U.UTIL.setupFormValidation();
+			    });
+			 
+			})(jQuery, window, document);
+	</script>
 </body>
 </html>

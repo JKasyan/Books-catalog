@@ -32,7 +32,7 @@ public class SignInServiceImpl implements UserDetailsService{
 		return buildUserForAuthentication(user, authorities);
 	}
 	
-	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
+	private List<GrantedAuthority> buildUserAuthority(List<UserRole> userRoles) {
 		 
 		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
  

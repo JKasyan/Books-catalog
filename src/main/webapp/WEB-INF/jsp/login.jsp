@@ -13,13 +13,14 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<a href="${contextPath}/registration.html">Registration</a>
 	<form action="<c:url value='/j_spring_security_check' />" method="post"
 		name="signInForm">
 		<input style="margin-top: 10px" type="email"
-			name="email" placeholder="Email" /> 
+			name="email" placeholder="Email" /><br>
 		<input class="input_text"
-			type="password" name="password" placeholder="Password" />
-		<input type="submit" value="Log in" /> 
+			type="password" name="password" placeholder="Password" /><br>
+		<input type="submit" value="Log in" /><br>
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	</form>
 </body>

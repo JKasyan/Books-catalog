@@ -36,6 +36,7 @@
 	<bean id="catalogServiceImpl" class="kasyan.catalog.services.impl.CatalogServiceImpl">
 		<property ref="authorDao" name="authorDao" />
 		<property ref="bookDao" name="bookDao" />
+		<property ref="userDao" name="userDao" />
 	</bean>
 
 </beans>
